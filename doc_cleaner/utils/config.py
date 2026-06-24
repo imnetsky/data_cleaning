@@ -1,4 +1,4 @@
-"""
+﻿"""
 配置管理模块 - 加载和管理应用程序配置
 
 提供基于 YAML 的配置加载机制，支持：
@@ -21,7 +21,8 @@ _DEFAULT_CONFIG = {
         'base_url': 'https://api.openai.com/v1',  # API 基础地址（兼容 OpenAI 接口）
         'model': 'gpt-4o-mini',     # 使用的模型名称
         'max_tokens': 8192,         # 最大 Token 数
-        'temperature': 0.3,         # 生成温度，较低值使输出更稳定
+        'temperature': 0.3,
+        'timeout': 120,             # 请求超时时间（秒）
     },
     'mineru': {
         'api_key': '',              # MinerU API 密钥
@@ -31,8 +32,10 @@ _DEFAULT_CONFIG = {
         'callback_url': '',         # 回调 URL（异步通知）
         'mode': 'precision',        # 默认解析模式
         'model_version': 'vlm',     # 模型版本
+        'batch_upload_url': 'https://mineru.net/api/v4/file-urls/batch',  # 批量上传 API 路径
         'poll_interval': 15,        # 轮询间隔（秒）
         'poll_timeout': 300,        # 轮询超时（秒）
+        'fallback_local_convert': True,  # MinerU 转换失败后是否尝试本地转换
     },
     'processing': {
         'batch_size': 2,            # 批量处理的文件数

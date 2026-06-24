@@ -267,34 +267,65 @@ def _process_mineru_files(other_files: list, input_dir: str, output_dir: str,
             batch = other_files[batch_start:batch_end]
             logger.info(f"MinerU 处理第 {batch_start + 1}-{batch_end} 个文件（模式：{mode}）")
 
-            for other_file in batch:
-                try:
-                    logger.info(f"上传文件进行 {mode} 模式转换：{other_file}")
-                    result = mineru_client.convert_file(other_file, mode=mode)
-                    if result is None:
-                        logger.warning(f"文件 {other_file} 转换失败，跳过")
-                        pbar.update(1)
-                        continue
+            if mode == 'precision' and len(batch) > 1:
+                # 真正的批量上传：一次 API 调用提交整个批次
+                batch_results = mineru_client.convert_files_batch(batch, mode=mode)
+                for other_file in batch:
+                    try:
+                        result = batch_results.get(other_file)
+                        if result is None:
+                            logger.warning(f"文件 {other_file} 转换失败，跳过")
+                            pbar.update(1)
+                            continue
 
-                    logger.info(f"清洗转换结果：{other_file}")
-                    cleaned = cleaner.clean(result)
+                        logger.info(f"清洗转换结果：{other_file}")
+                        cleaned = cleaner.clean(result)
 
-                    temp_md_path = os.path.join(temp_dir, os.path.basename(other_file) + '.md')
-                    write_file(cleaned, temp_md_path)
+                        temp_md_path = os.path.join(temp_dir, os.path.basename(other_file) + '.md')
+                        write_file(cleaned, temp_md_path)
 
-                    rel_path = os.path.relpath(other_file, input_dir)
-                    output_rel_path = os.path.splitext(rel_path)[0] + '.md'
-                    output_path = os.path.join(output_dir, output_rel_path)
-                    os.makedirs(os.path.dirname(output_path), exist_ok=True)
-                    shutil.copy2(temp_md_path, output_path)
+                        rel_path = os.path.relpath(other_file, input_dir)
+                        output_rel_path = os.path.splitext(rel_path)[0] + '.md'
+                        output_path = os.path.join(output_dir, output_rel_path)
+                        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+                        shutil.copy2(temp_md_path, output_path)
 
-                    processed_count += 1
-                    logger.info(f"完成：{rel_path} -> {output_rel_path}")
+                        processed_count += 1
+                        logger.info(f"完成：{rel_path} -> {output_rel_path}")
 
-                except Exception as e:
-                    logger.error(f"处理文件 {other_file} 失败：{e}")
+                    except Exception as e:
+                        logger.error(f"处理文件 {other_file} 失败：{e}")
 
-                pbar.update(1)
+                    pbar.update(1)
+            else:
+                for other_file in batch:
+                    try:
+                        logger.info(f"上传文件进行 {mode} 模式转换：{other_file}")
+                        result = mineru_client.convert_file(other_file, mode=mode)
+                        if result is None:
+                            logger.warning(f"文件 {other_file} 转换失败，跳过")
+                            pbar.update(1)
+                            continue
+
+                        logger.info(f"清洗转换结果：{other_file}")
+                        cleaned = cleaner.clean(result)
+
+                        temp_md_path = os.path.join(temp_dir, os.path.basename(other_file) + '.md')
+                        write_file(cleaned, temp_md_path)
+
+                        rel_path = os.path.relpath(other_file, input_dir)
+                        output_rel_path = os.path.splitext(rel_path)[0] + '.md'
+                        output_path = os.path.join(output_dir, output_rel_path)
+                        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+                        shutil.copy2(temp_md_path, output_path)
+
+                        processed_count += 1
+                        logger.info(f"完成：{rel_path} -> {output_rel_path}")
+
+                    except Exception as e:
+                        logger.error(f"处理文件 {other_file} 失败：{e}")
+
+                    pbar.update(1)
 
     try:
         shutil.rmtree(temp_dir, ignore_errors=True)

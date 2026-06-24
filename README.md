@@ -1,6 +1,6 @@
 # Markdown 文档清理工具
 
-**版本：V0.3.0** | **开发者：Wu Hao** | **邮箱：i_net_sky@hotmail.com** | **最后更新：2026-06-18**
+**版本：V0.4.0** | **开发者：Wu Hao** | **邮箱：i_net_sky@hotmail.com** | **最后更新：2026-06-24**
 
 一个基于 Python 和 LLM 的命令行工具，用于清理 Markdown 格式的技术文档。可去除噪声、统一编码、修复错误、去重，并通过大语言模型自动生成文档概要、段落摘要和逻辑关联。支持通过 MinerU API 将 PDF、Word、PPT 等文件自动转换为 Markdown 格式后处理，支持通过 pandas 直接将 Excel 文件转换为 Markdown 表格。
 
@@ -44,6 +44,7 @@ pip install -r requirements.txt
 - `requests>=2.28` - MinerU API HTTP 请求
 - `tqdm>=4.65` - 进度条显示
 - `pdfplumber>=0.11` - PDF 页数检测与本地转换
+- `python-docx>=0.8.11` - DOCX 文件本地转换
 
 ## 配置
 
@@ -57,8 +58,8 @@ llm:
   base_url: "http://your-llm-api-server/v1"
   model: "qwen3-vl-2b-instruct"
   timeout: 120
-  temperature: 0.7
-  max_tokens: 64000
+  temperature: 0.3
+  max_tokens: 8192
 ```
 
 | 配置项 | 说明 |
@@ -570,6 +571,7 @@ Excel 文件仅做数据清洗和格式规范，不添加上下文信息。
 
 | 版本 | 日期 | 说明 |
 |------|------|------|
+| V0.4.0 | 2026-06-24 | 修复：config.py MinerU 默认值补充、excel_converter 导入修复、MinerU 批量上传支持、LLM 摘要截断 |
 | V0.3.0 | 2026-06-18 | 代码审查修复：LLM 超时配置、标题闭合#处理、表格行判断约束、异常日志记录、MinerU 模式校验、日志初始化顺序优化、删除死代码 |
 | V0.2.2 | 2026-04-09 | 新增 Excel 文件直接转换（pandas）、分批处理、临时目录管理；Excel 文件不经过大模型处理 |
 | V0.2.1 | 2026-04-09 | 新增 MinerU API 集成，支持 PDF/Word/PPT/图片等多格式文件自动转换 |

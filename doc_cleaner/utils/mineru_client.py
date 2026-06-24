@@ -206,6 +206,215 @@ class MinerUClient:
         # Step 3: 轮询批次状态
         return self._poll_batch_result(batch_id)
 
+    def convert_files_batch(
+        self,
+        file_paths: list,
+        mode: str = 'precision'
+    ) -> dict:
+        """批量上传多个文件到 MinerU API 进行转换（真正的批量调用）
+
+        将所有文件在一个 API 批量请求中提交，而非逐个调用。
+        仅 precision 模式支持真正的批量上传；agent 模式回退到逐个转换。
+
+        Args:
+            file_paths: 文件路径列表
+            mode: 转换模式，仅 'precision' 支持批量
+
+        Returns:
+            字典 {file_path: markdown_content, ...}，
+            未成功转换的文件不会出现在字典中
+        """
+        logger = get_logger()
+        if not file_paths:
+            return {}
+
+        if mode != 'precision':
+            results = {}
+            for fp in file_paths:
+                content = self.convert_file(fp, mode=mode)
+                if content is not None:
+                    results[fp] = content
+            return results
+
+        # ---- precision 模式批量上传 ----
+        filenames = [os.path.basename(fp) for fp in file_paths]
+
+        if self.batch_upload_url:
+            upload_url_endpoint = self.batch_upload_url
+        else:
+            upload_url_endpoint = (f"{self.precision_base_url}"
+                                   "/api/v4/file-urls/batch")
+
+        preview = ", ".join(filenames[:3])
+        suffix = "..." if len(filenames) > 3 else ""
+        logger.info(
+            f"批量上传 {len(file_paths)} 个文件：{preview}{suffix}")
+
+        try:
+            response = requests.post(
+                upload_url_endpoint,
+                headers=self.headers,
+                json={
+                    "files": [{"name": fn} for fn in filenames],
+                    "model_version": self.model_version,
+                },
+                timeout=30
+            )
+            if response.status_code != 200:
+                logger.error(
+                    f"批量上传 URL 获取失败：{response.status_code}")
+                return self._batch_fallback_individual(
+                    file_paths, mode, logger)
+
+            result = response.json()
+            if result.get('code') != 0:
+                msg = result.get('msg', '未知错误')
+                logger.error(f"批量上传 URL 获取失败：{msg}")
+                return self._batch_fallback_individual(
+                    file_paths, mode, logger)
+
+            batch_id = result['data']['batch_id']
+            file_urls = result['data']['file_urls']
+
+            if len(file_urls) != len(file_paths):
+                logger.warning(
+                    f"返回的上传 URL 数量 ({len(file_urls)})"
+                    f" 与文件数量 ({len(file_paths)}) 不一致")
+                return self._batch_fallback_individual(
+                    file_paths, mode, logger)
+
+        except requests.RequestException as e:
+            logger.error(f"批量上传 URL 请求异常：{e}")
+            return self._batch_fallback_individual(
+                file_paths, mode, logger)
+
+        # Step 2: 上传所有文件到各自的预签名 URL
+        upload_success = []
+        for i, (fp, upload_url) in enumerate(zip(file_paths, file_urls)):
+            try:
+                n = i + 1
+                total = len(file_paths)
+                logger.info(
+                    f"批量上传 [{n}/{total}]：{filenames[i]}")
+                with open(fp, 'rb') as f:
+                    upload_response = requests.put(
+                        upload_url, data=f, timeout=120)
+                if upload_response.status_code == 200:
+                    upload_success.append(fp)
+                    logger.info(f"文件上传成功：{filenames[i]}")
+                else:
+                    logger.error(
+                        f"文件上传失败 [{n}]："
+                        f"{upload_response.status_code}")
+            except Exception as e:
+                logger.error(f"文件上传异常 [{i+1}]：{e}")
+
+        if not upload_success:
+            logger.error("所有文件上传均失败")
+            return self._batch_fallback_individual(
+                file_paths, mode, logger)
+
+        # Step 3: 轮询批次状态并下载全部结果
+        all_results = self._poll_batch_all_results(
+            batch_id, upload_success)
+        if all_results is None:
+            return self._batch_fallback_individual(
+                file_paths, mode, logger)
+
+        return all_results
+
+    def _batch_fallback_individual(
+        self,
+        file_paths: list,
+        mode: str,
+        logger
+    ) -> dict:
+        """批量上传失败时回退到逐个转换（含三级回退策略）"""
+        logger.warning("批量上传失败，回退到逐个文件转换")
+        results = {}
+        for fp in file_paths:
+            content = self.convert_file(fp, mode=mode)
+            if content is not None:
+                results[fp] = content
+        return results
+
+    def _poll_batch_all_results(
+        self, batch_id: str, file_paths: list
+    ):
+        """轮询批量任务状态并下载全部文件的转换结果"""
+        logger2 = get_logger()
+        logger2.info(
+            f"批次 {batch_id} 已提交（{len(file_paths)} 个文件）"
+            "，开始轮询...")
+        start_time = time.time()
+        query_url = (
+            f"{self.precision_base_url}"
+            f"/api/v4/extract-results/batch/{batch_id}")
+
+        while time.time() - start_time < self.max_poll_time:
+            try:
+                response = requests.get(
+                    query_url, headers=self.headers, timeout=30)
+                if response.status_code != 200:
+                    logger2.warning(
+                        f"查询批次状态失败：{response.status_code}")
+                    time.sleep(self.poll_interval)
+                    continue
+
+                result = response.json()
+                if result.get('code') != 0:
+                    msg = result.get('msg', '未知错误')
+                    logger2.warning(f"查询批次状态异常：{msg}")
+                    time.sleep(self.poll_interval)
+                    continue
+
+                batch_data = result.get('data', {})
+                extract_results = batch_data.get('extract_result', [])
+
+                if not extract_results:
+                    elapsed = int(time.time() - start_time)
+                    logger2.debug(
+                        f"批次 {batch_id} 处理中...（耗时 {elapsed}s）")
+                    time.sleep(self.poll_interval)
+                    continue
+
+                all_done = all(
+                    r.get('state') in ('done', 'failed')
+                    for r in extract_results
+                )
+
+                if all_done:
+                    logger2.info(f"批次 {batch_id} 全部完成")
+                    results = {}
+                    for i2, extract_r in enumerate(extract_results):
+                        if extract_r.get('state') == 'done':
+                            full_zip_url = extract_r.get(
+                                'full_zip_url', '')
+                            if full_zip_url:
+                                md_content = self._download_result(
+                                    full_zip_url)
+                                if (md_content is not None
+                                        and i2 < len(file_paths)):
+                                    results[file_paths[i2]] = md_content
+                            else:
+                                logger2.warning(
+                                    f"批次结果 [{i2+1}] 缺少下载链接")
+                    return results if results else None
+
+                elapsed = int(time.time() - start_time)
+                logger2.debug(
+                    f"批次 {batch_id} 处理中...（耗时 {elapsed}s）")
+
+            except requests.RequestException as e:
+                logger2.warning(f"轮询请求异常：{e}")
+
+            time.sleep(self.poll_interval)
+
+        logger2.error(
+            f"批次 {batch_id} 超时（超过 {self.max_poll_time} 秒）")
+        return None
+
+
     def _check_agent_limits(self, file_path: str) -> bool:
         """
         检查文件是否满足 Agent 轻量模式的限制

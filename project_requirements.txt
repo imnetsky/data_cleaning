@@ -115,6 +115,7 @@
 | requests | >= 2.28 | MinerU API HTTP 请求 |
 | tqdm | >= 4.65 | 进度条显示 |
 | pdfplumber | >= 0.11 | PDF 页数检测与本地转换 |
+| python-docx | >= 0.8.11 | DOCX 文件本地转换 |
 
 ---
 

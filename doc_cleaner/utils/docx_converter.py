@@ -1,4 +1,4 @@
-"""
+﻿"""
 DOCX 文件转换模块
 
 使用 python-docx 库将 DOCX 文件转换为 Markdown 格式，
@@ -102,6 +102,6 @@ def _parse_table(table: Table) -> str:
 
 
 def _get_logger():
-    """获取日志记录器"""
-    import logging
-    return logging.getLogger(__name__)
+    """获取项目统一日志记录器"""
+    from .logger import get_logger
+    return get_logger()

@@ -292,6 +292,10 @@ class SegmentIntroProcessor:
             summary = self.llm_client.summarize_sections_batch(major_sections, content)
             if summary:
                 parsed = self._parse_batch_summaries(summary, major_sections)
+                # 硬性截断：确保每个章节摘要不超过 50 字符
+                for title in parsed:
+                    if len(parsed[title]) > 50:
+                        parsed[title] = parsed[title][:47] + '...'
                 summaries.update(parsed)
         except Exception as e:
             logger.warning(f"批量生成章节摘要失败，回退到逐个生成：{e}")

@@ -1,13 +1,15 @@
-"""
+﻿"""
 Excel 转换器 - 将 Excel 文件转换为 Markdown 表格格式
 
 将 .xlsx/.xls 文件中的每个工作表（sheet）转换为 Markdown 表格，
 支持多个工作表，并用标题区分。
 """
 
-import logging
 import pandas as pd
+from .logger import get_logger
 from typing import Optional
+
+logger = get_logger()
 
 
 def excel_to_markdown(file_path: str, max_sheets: int = 10) -> Optional[str]:
@@ -34,7 +36,7 @@ def excel_to_markdown(file_path: str, max_sheets: int = 10) -> Optional[str]:
         xls = pd.ExcelFile(file_path)
         sheet_names = xls.sheet_names[:max_sheets]
     except Exception as e:
-        logging.error(f"读取 Excel 文件失败：{e}")
+        logger.error(f"读取 Excel 文件失败：{e}")
         return None
 
     markdown_parts = []
@@ -58,7 +60,7 @@ def excel_to_markdown(file_path: str, max_sheets: int = 10) -> Optional[str]:
             markdown_parts.append("")
 
         except Exception as e:
-            logging.warning(f"处理工作表 {sheet_name} 失败：{e}")
+            logger.warning(f"处理工作表 {sheet_name} 失败：{e}")
             continue
 
     result = '\n'.join(markdown_parts)
