@@ -1,0 +1,3 @@
+2026-05-10 18:51:46 [INFO] 日志文件：C:\AI\data_cleaning\log\clean_20260510_185146.log
+2026-05-10 18:51:46 [INFO] Agent 模式提交文件：问题排查登记表 (2).xlsx
+2026-05-10 18:51:47 [ERROR] Agent 提交失败：field "file_name" is not set

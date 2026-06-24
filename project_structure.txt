@@ -1,0 +1,21 @@
+# 项目根目录
+markdown-cleaner/
+├── main.py              # 命令行入口
+├── doc_cleaner/         # 核心包
+│   ├── __init__.py
+│   ├── cleaner.py       # 主清洗器类
+│   ├── processors/      # 各功能处理器
+│   │   ├── __init__.py
+│   │   ├── denoise.py
+│   │   ├── encoding.py
+│   │   ├── tables.py
+│   │   ├── dedup.py
+│   │   └── errors.py
+│   └── utils/
+│       ├── __init__.py
+│       ├── file_io.py
+│       └── helpers.py
+├── tests/               # 测试（可选）
+├── requirements.txt     # 依赖
+├── README.md
+└── .gitignore

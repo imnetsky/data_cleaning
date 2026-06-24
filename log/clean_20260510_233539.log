@@ -1,0 +1,93 @@
+2026-05-10 23:35:39 [INFO] 日志文件：C:\AI\data_cleaning\log\clean_20260510_233539.log
+2026-05-10 23:35:39 [INFO] ============================================================
+2026-05-10 23:35:39 [INFO] 文档清洗工具启动
+2026-05-10 23:35:39 [INFO] 输入目录：input
+2026-05-10 23:35:39 [INFO] 输出目录：output
+2026-05-10 23:35:39 [INFO] MinerU 模式：precision
+2026-05-10 23:35:39 [INFO] 批次大小：2
+2026-05-10 23:35:39 [INFO] ============================================================
+2026-05-10 23:35:39 [INFO] 未发现 Markdown 文件
+2026-05-10 23:35:39 [INFO] 发现 1 个 Excel 文件，开始转换...
+2026-05-10 23:35:39 [INFO] 处理第 1-1 个 Excel 文件
+2026-05-10 23:35:39 [INFO] 转换 Excel：input\问题排查登记表 (2).xlsx
+2026-05-10 23:35:39 [INFO] 开始清洗：input\问题排查登记表 (2).xlsx
+2026-05-10 23:35:39 [INFO]   [EncodingProcessor] 处理完成（0.03s）
+2026-05-10 23:35:39 [INFO]   [DenoiseProcessor] 处理完成（0.00s）
+2026-05-10 23:35:39 [INFO]   [TableProcessor] 处理完成（0.00s）
+2026-05-10 23:35:39 [INFO]   [ErrorProcessor] 处理完成（0.00s）
+2026-05-10 23:35:39 [INFO]   [DedupProcessor] 处理完成（0.00s）
+2026-05-10 23:35:39 [INFO]   [FormatStandardizationProcessor] 处理完成（0.00s）
+2026-05-10 23:35:39 [INFO] 完成：问题排查登记表 (2).xlsx -> 问题排查登记表 (2).md
+2026-05-10 23:35:39 [INFO] Excel 文件处理完成：1/1 个成功
+2026-05-10 23:35:39 [INFO] 发现 3 个非 Markdown 文件，开始转换（回退策略：precision 模式 → Agent 轻量模式 → 本地转换）...
+2026-05-10 23:35:39 [INFO] MinerU 处理第 1-2 个文件（模式：precision）
+2026-05-10 23:35:39 [INFO] 上传文件进行 precision 模式转换：input\兴业证券redo卷时延增高问题分析报告.pdf
+2026-05-10 23:35:39 [INFO] 申请上传 URL：兴业证券redo卷时延增高问题分析报告.pdf
+2026-05-10 23:35:40 [ERROR] 获取上传 URL 失败：401 login required
+2026-05-10 23:35:40 [WARNING] 精准模式转换失败，自动回退到 Agent 轻量模式：兴业证券redo卷时延增高问题分析报告.pdf
+2026-05-10 23:35:40 [WARNING] PDF 页数 21 超过 Agent 模式限制（20 页），跳过：兴业证券redo卷时延增高问题分析报告.pdf
+2026-05-10 23:35:40 [INFO] MinerU 所有模式均失败，回退到本地转换 (.pdf)：input\兴业证券redo卷时延增高问题分析报告.pdf
+2026-05-10 23:35:42 [INFO] 本地转换成功 (.pdf)：input\兴业证券redo卷时延增高问题分析报告.pdf
+2026-05-10 23:35:42 [INFO] 清洗转换结果：input\兴业证券redo卷时延增高问题分析报告.pdf
+2026-05-10 23:35:42 [INFO]   [EncodingProcessor] 处理完成（0.01s）
+2026-05-10 23:35:42 [INFO]   [DenoiseProcessor] 处理完成（0.00s）
+2026-05-10 23:35:42 [INFO]   [TableProcessor] 处理完成（0.00s）
+2026-05-10 23:35:42 [INFO]   [ErrorProcessor] 处理完成（0.00s）
+2026-05-10 23:35:42 [INFO]   [DedupProcessor] 处理完成（0.00s）
+2026-05-10 23:35:42 [INFO]   [FormatStandardizationProcessor] 处理完成（0.00s）
+2026-05-10 23:35:42 [INFO] 章节识别完成：共 10 个章节（Markdown 标题 0，数字编号 10）
+2026-05-10 23:35:59 [ERROR] LLM API 调用失败：Request timed out.
+2026-05-10 23:36:16 [ERROR] LLM API 调用失败：Request timed out.
+2026-05-10 23:36:32 [ERROR] LLM API 调用失败：Request timed out.
+2026-05-10 23:36:32 [INFO]   [SegmentIntroProcessor] 处理完成（49.71s）
+2026-05-10 23:36:32 [INFO] 完成：兴业证券redo卷时延增高问题分析报告.pdf -> 兴业证券redo卷时延增高问题分析报告.md
+2026-05-10 23:36:32 [INFO] 上传文件进行 precision 模式转换：input\生产事件复盘报告-（IN20230220000026）优理宝移动终端浙江区域少量客户登录异常(1).docx
+2026-05-10 23:36:32 [INFO] 申请上传 URL：生产事件复盘报告-（IN20230220000026）优理宝移动终端浙江区域少量客户登录异常(1).docx
+2026-05-10 23:36:32 [ERROR] 获取上传 URL 失败：401 login required
+2026-05-10 23:36:32 [WARNING] 精准模式转换失败，自动回退到 Agent 轻量模式：生产事件复盘报告-（IN20230220000026）优理宝移动终端浙江区域少量客户登录异常(1).docx
+2026-05-10 23:36:32 [INFO] Agent 模式提交文件：生产事件复盘报告-（IN20230220000026）优理宝移动终端浙江区域少量客户登录异常(1).docx
+2026-05-10 23:36:33 [INFO] Agent 任务已提交：8abf1fbc-b507-4882-a802-cc6ad9bb1b9507
+2026-05-10 23:36:33 [INFO] 上传文件：生产事件复盘报告-（IN20230220000026）优理宝移动终端浙江区域少量客户登录异常(1).docx
+2026-05-10 23:36:33 [INFO] 文件上传成功：生产事件复盘报告-（IN20230220000026）优理宝移动终端浙江区域少量客户登录异常(1).docx
+2026-05-10 23:36:33 [INFO] Agent 任务 8abf1fbc-b507-4882-a802-cc6ad9bb1b9507 已提交，开始轮询状态...
+2026-05-10 23:36:34 [DEBUG] Agent 任务 8abf1fbc-b507-4882-a802-cc6ad9bb1b9507 处理中...（状态：waiting-file，耗时 0s）
+2026-05-10 23:36:39 [DEBUG] Agent 任务 8abf1fbc-b507-4882-a802-cc6ad9bb1b9507 处理中...（状态：running，耗时 5s）
+2026-05-10 23:36:44 [INFO] Agent 任务 8abf1fbc-b507-4882-a802-cc6ad9bb1b9507 已完成
+2026-05-10 23:36:44 [INFO] 下载 Markdown：https://cdn-mineru.openxlab.org.cn/pdf/2026-05-10/eb9ea8d8-255a-491a-a46f-fbcb9d9e75bb/full.md
+2026-05-10 23:36:45 [INFO] 清洗转换结果：input\生产事件复盘报告-（IN20230220000026）优理宝移动终端浙江区域少量客户登录异常(1).docx
+2026-05-10 23:36:45 [INFO]   [EncodingProcessor] 处理完成（0.00s）
+2026-05-10 23:36:45 [INFO]   [DenoiseProcessor] 处理完成（0.00s）
+2026-05-10 23:36:45 [INFO]   [TableProcessor] 处理完成（0.00s）
+2026-05-10 23:36:45 [INFO]   [ErrorProcessor] 处理完成（0.00s）
+2026-05-10 23:36:45 [INFO]   [DedupProcessor] 处理完成（0.00s）
+2026-05-10 23:36:45 [INFO]   [FormatStandardizationProcessor] 处理完成（0.00s）
+2026-05-10 23:36:45 [INFO] 章节识别完成：共 11 个章节（Markdown 标题 11，数字编号 0）
+2026-05-10 23:37:01 [ERROR] LLM API 调用失败：Request timed out.
+2026-05-10 23:37:18 [ERROR] LLM API 调用失败：Request timed out.
+2026-05-10 23:37:34 [ERROR] LLM API 调用失败：Request timed out.
+2026-05-10 23:37:34 [INFO]   [SegmentIntroProcessor] 处理完成（49.14s）
+2026-05-10 23:37:34 [INFO] 完成：生产事件复盘报告-（IN20230220000026）优理宝移动终端浙江区域少量客户登录异常(1).docx -> 生产事件复盘报告-（IN20230220000026）优理宝移动终端浙江区域少量客户登录异常(1).md
+2026-05-10 23:37:34 [INFO] MinerU 处理第 3-3 个文件（模式：precision）
+2026-05-10 23:37:34 [INFO] 上传文件进行 precision 模式转换：input\生产事件复盘报告-（IN20240729000016）同余数据报送异常.docx
+2026-05-10 23:37:34 [INFO] 申请上传 URL：生产事件复盘报告-（IN20240729000016）同余数据报送异常.docx
+2026-05-10 23:37:35 [ERROR] 获取上传 URL 失败：401 login required
+2026-05-10 23:37:35 [WARNING] 精准模式转换失败，自动回退到 Agent 轻量模式：生产事件复盘报告-（IN20240729000016）同余数据报送异常.docx
+2026-05-10 23:37:35 [INFO] Agent 模式提交文件：生产事件复盘报告-（IN20240729000016）同余数据报送异常.docx
+2026-05-10 23:37:35 [INFO] Agent 任务已提交：ef7f078d-b858-450a-b6b6-728f42c6e8e707
+2026-05-10 23:37:35 [INFO] 上传文件：生产事件复盘报告-（IN20240729000016）同余数据报送异常.docx
+2026-05-10 23:37:36 [INFO] 文件上传成功：生产事件复盘报告-（IN20240729000016）同余数据报送异常.docx
+2026-05-10 23:37:36 [INFO] Agent 任务 ef7f078d-b858-450a-b6b6-728f42c6e8e707 已提交，开始轮询状态...
+2026-05-10 23:37:36 [DEBUG] Agent 任务 ef7f078d-b858-450a-b6b6-728f42c6e8e707 处理中...（状态：waiting-file，耗时 0s）
+2026-05-10 23:37:41 [DEBUG] Agent 任务 ef7f078d-b858-450a-b6b6-728f42c6e8e707 处理中...（状态：running，耗时 5s）
+2026-05-10 23:37:47 [INFO] Agent 任务 ef7f078d-b858-450a-b6b6-728f42c6e8e707 已完成
+2026-05-10 23:37:47 [INFO] 下载 Markdown：https://cdn-mineru.openxlab.org.cn/pdf/2026-05-10/c6d5992c-b055-431e-95e3-c9348091b320/full.md
+2026-05-10 23:37:47 [INFO] 清洗转换结果：input\生产事件复盘报告-（IN20240729000016）同余数据报送异常.docx
+2026-05-10 23:37:47 [INFO]   [EncodingProcessor] 处理完成（0.00s）
+2026-05-10 23:37:47 [INFO]   [DenoiseProcessor] 处理完成（0.00s）
+2026-05-10 23:37:47 [INFO]   [TableProcessor] 处理完成（0.00s）
+2026-05-10 23:37:47 [INFO]   [ErrorProcessor] 处理完成（0.00s）
+2026-05-10 23:37:47 [INFO]   [DedupProcessor] 处理完成（0.00s）
+2026-05-10 23:37:47 [INFO]   [FormatStandardizationProcessor] 处理完成（0.00s）
+2026-05-10 23:37:47 [INFO] 章节识别完成：共 14 个章节（Markdown 标题 14，数字编号 0）
+2026-05-10 23:38:03 [ERROR] LLM API 调用失败：Request timed out.
+2026-05-10 23:38:20 [ERROR] LLM API 调用失败：Request timed out.

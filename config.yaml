@@ -1,0 +1,61 @@
+llm:
+  api_key: ""
+  base_url: "https://api.deepseek.com"
+  model: "deepseek-v4-flash"
+  timeout: 120
+  temperature: 0.3
+  max_tokens: 8192
+
+# 处理配置
+processing:
+  # 每批次处理的文件数量，默认为 2
+  # 将 input 目录中的文件分批处理，避免同时处理过多文件导致资源占用过高
+  batch_size: 2
+
+# MinerU 文档解析 API 配置
+# 用于将非 Markdown 文件（PDF、Word、PPT、图片等）转换为 Markdown 格式
+#
+# 两种解析模式对比：
+#
+# ┌──────────────┬─────────────────────────────┬─────────────────────────────┐
+# │ 维度          │ precision（精准解析）         │ agent（轻量解析）            │
+# ├──────────────┼─────────────────────────────┼─────────────────────────────┤
+# │ Token 要求    │ 需要 API Key                 │ 不需要（IP 限流）            │
+# │ 文件大小限制   │ ≤ 200MB                     │ ≤ 10MB                      │
+# │ 页数限制      │ ≤ 600 页                     │ ≤ 20 页                     │
+# │ 批量支持      │ 支持（≤ 200 文件）            │ 不支持（一次只能解析一个文件） │
+# │ 输出格式      │ ZIP 压缩包（Markdown + JSON） │ Markdown（CDN 链接）         │
+# │ 表格/公式识别  │ 支持（可配置）                │ 支持（可配置）               │
+# │ 调用方式      │ 异步（提交 → 轮询）           │ 异步（提交 → 轮询）          │
+# │ 适用场景      │ 复杂文档、大文件、批量处理      │ 快速预览、小文件、单文件处理   │
+# └──────────────┴─────────────────────────────┴─────────────────────────────┘
+mineru:
+  # API 密钥：精准解析模式必填，轻量解析模式无需填写
+  api_key: ""
+
+  # 解析模式：precision（精准解析）或 agent（轻量解析）
+  # - precision：高精度深度解析，支持批量处理，文件大小 ≤ 200MB，页数 ≤ 600，输出 ZIP（含 Markdown + JSON）
+  # - agent：轻量快速解析，无需 API Key，仅支持单文件，文件大小 ≤ 10MB，页数 ≤ 20，输出 Markdown
+  mode: "precision"
+
+  # 模型版本：仅精准解析模式生效
+  # - pipeline：传统流水线模型，速度较快
+  # - vlm：视觉语言模型（推荐），精度更高，对复杂版面理解更好
+  # - MinerU-HTML：专门用于 HTML 文件解析
+  model_version: "vlm"
+
+  # MinerU API 基础地址（仅填写域名部分，API 路径由客户端自动拼接）
+  base_url: "https://mineru.net"
+
+  # 本地文件批量上传解析 API 路径（仅精准解析模式使用）
+  batch_upload_url: "https://mineru.net/api/v4/file-urls/batch"
+
+  # 轮询间隔（秒）：查询解析任务状态的时间间隔
+  poll_interval: 15
+
+  # 轮询超时（秒）：等待解析完成的最大时间
+  poll_timeout: 300
+
+  # 是否在 MinerU 转换失败后尝试本地转换（仅对 DOCX 文件有效）
+  # true: 启用本地转换回退；false: 仅使用 MinerU API
+  fallback_local_convert: true
